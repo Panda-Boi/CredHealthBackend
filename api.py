@@ -1,3 +1,4 @@
+import math
 import pickle
 from datetime import datetime
 
@@ -80,11 +81,53 @@ async def get_scores():
         'dietScore': int(scores[2])
     }
 
+
+@app.get('/update-scores/')
+def update_score():
+    # noinspection PyTupleAssignmentBalance, PyTypeChecker
+    current_score = sum(*get_health_data(), _get_today_score()) // 3
+
+    with open('user.pkl', 'rb') as f:
+        data = pickle.load(f)
+
+    data[1] = data[1] + 1
+    data[0] = current_score + (1 / data[1]) * (current_score - data[0])
+
+    data[2] = 0
+    if data[0] != 0:
+        a = 10
+        x = data[0] - 50
+        data[2] = (-250 / a * math.sqrt(2 * math.pi) * math.exp(-0.05 * math.pow((2 * x) / a, 2)) + 10) * -math.copysign(1, x)
+
+    with open('user.pkl', 'wb') as f:
+        pickle.dump(data, f)
+
+    return data[1], data[2]
+
+
+@app.get('/get-policy-details/')
+async def get_policy_details():
+    with open('scores.pkl', 'rb') as f:
+        data = pickle.load(f)
+
+    multiplier = 1 + (data[2] / 100)
+    return data[3] * multiplier, data[4] * multiplier
+
+
 try:
     f = open('user.pkl', 'rb')
     _ = pickle.load(f)
 except (EOFError, FileNotFoundError):
     f = open('user.pkl', 'wb')
     pickle.dump([2000, 100, []], f)
+finally:
+    f.close()
+
+try:
+    f = open('scores.pkl', 'rb')
+    _ = pickle.load(f)
+except (EOFError, FileNotFoundError):
+    f = open('scores.pkl', 'wb')
+    pickle.dump([50, 1, 0, 100, 2000], f)
 finally:
     f.close()
