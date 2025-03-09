@@ -1,0 +1,12 @@
+.venv/
+logs/
+__pycache__/
+
+token.pkl
+user.pkl
+
+test_request.py
+test.py
+
+api_secret.json
+client_secret.json
