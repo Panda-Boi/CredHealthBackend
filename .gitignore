@@ -1,6 +1,7 @@
 .venv/
 logs/
 __pycache__/
+node_modules/
 
 token.pkl
 user.pkl
