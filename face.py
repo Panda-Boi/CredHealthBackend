@@ -27,8 +27,11 @@ def get_embedding(img_bytes):
 
 
 def verify_faces(saved_img, test_img):
-    emb1 = get_embedding(saved_img)
-    emb2 = get_embedding(test_img)
+    try:
+        emb1 = get_embedding(saved_img)
+        emb2 = get_embedding(test_img)
+    except:
+        return False
 
     distance = euclidean(emb1, emb2)
     similarity = 1 - cosine(emb1, emb2)

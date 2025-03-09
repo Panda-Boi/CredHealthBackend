@@ -74,7 +74,7 @@ async def get_scores():
     scores = *get_health_data(), _get_today_score()
 
     return {
-        'healthScore': (min(scores) + max(scores)) // 2,
+        'healthScore': sum(scores) // len(scores),
         'activityScore': int(scores[0]),
         'sleepScore': int(scores[1]),
         'dietScore': int(scores[2])
